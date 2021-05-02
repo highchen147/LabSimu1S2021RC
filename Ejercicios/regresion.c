@@ -63,7 +63,6 @@ void main(void){
     {
         fprintf(datosplot,"%f %f %f %f\n",t[i],st[i],v[i],sv[i]);
     }
-    fclose(datosplot);
     FILE *gnuplot = popen("gnuplot -persist","w");
     fprintf(gnuplot,"unset label\n");
     fprintf(gnuplot,"set terminal 'epslatex'\n");
@@ -81,5 +80,6 @@ void main(void){
     fprintf(gnuplot,"unset key\n");
     fprintf(gnuplot,"plot f(x), 'data.txt' using 1:3:2:4 with xyerrorbars pt 3\n");
     fprintf(gnuplot, "set  output\n");
+    fclose(datosplot);
     pclose(gnuplot);
 }
