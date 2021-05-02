@@ -38,7 +38,9 @@ float sum2(float x[n],float y[n])
 void main(void){
     //definimos dos listas, una para la velocidad (v) y otra para el tiempo (t)
     float v[6]={1,3,8,11,14,18};
+    float sv[6];
     float t[6]={2.1,3.0,5.2,7.1,9.2,10.1};
+    float st[6]={0.1,0.1,0.1,0.1,0.1,0.1};
     //definimos m para la pendiente y b para el intercepto en y
     float m,b;
     //calculamos m
@@ -49,4 +51,35 @@ void main(void){
     char eme[100],be[100];
     sprintf(eme,"%f",m);
     sprintf(be,"%f",b);
+    for (int i = 0; i < 6; i++)
+    {
+        sv[i]=m*0.1;
+    }
+    printf("\n%f ",sv[0]);
+
+    FILE *datosplot = fopen("data.txt", "w");
+
+    for (int i = 0; i < 6; i++)
+    {
+        fprintf(datosplot,"%f %f %f %f\n",t[i],st[i],v[i],sv[i]);
+    }
+    fclose(datosplot);
+    FILE *gnuplot = popen("gnuplot -persist","w");
+    fprintf(gnuplot,"unset label\n");
+    fprintf(gnuplot,"set terminal 'epslatex'\n");
+    fprintf(gnuplot,"set output 'graf.tex'\n");
+    fprintf(gnuplot,"set xrange [0:12]\n");
+    fprintf(gnuplot,"set yrange [0:12]\n");
+    fprintf(gnuplot,"set title 'Velocidad - Tiempo'\n");
+    fprintf(gnuplot,"set xlabel 't'\n");
+    fprintf(gnuplot,"set ylabel 'v(t)'\n");
+    fprintf(gnuplot,"set grid\n");
+    fprintf(gnuplot,"unset key\n");
+    fprintf(gnuplot,"m=%f\n",m);
+    fprintf(gnuplot,"b=%f\n",b);
+    fprintf(gnuplot,"f(x)=m*x+b\n");
+    fprintf(gnuplot,"unset key\n");
+    fprintf(gnuplot,"plot f(x), 'data.txt' using 1:3:2:4 with xyerrorbars pt 3\n");
+    fprintf(gnuplot, "set  output\n");
+    pclose(gnuplot);
 }
