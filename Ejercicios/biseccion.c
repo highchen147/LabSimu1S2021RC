@@ -38,6 +38,8 @@ void main(void){
         else if ((f(x0)*f(xp)) > 0)
         {
             x0 = xp;
+        }else{
+            break;
         }
         //se le asigna el valor anterior del valor medio a xp1
         xp1 = xp;
@@ -48,5 +50,47 @@ void main(void){
     }
     //se imprime la raíz encontrada
     printf("\nLa raíz es %f\n", xp);
+    /* con la función popen se abre un ejecutable llamado gnuplot para ejecutar los comandos en Gnuplot
+    que nos servirá para graficar y generar el .tex
+    */
+    FILE *gnuplot = popen("gnuplot -persist","w");
+    fprintf(gnuplot,"unset label\n");
+    fprintf(gnuplot,"set terminal 'epslatex'\n");
+    //se nomrba al archivo objetivo como grafica.tex
+    fprintf(gnuplot,"set output 'grafica.tex'\n");
+    fprintf(gnuplot,"set xrange [-3:3]\n");
+    fprintf(gnuplot,"set yrange [-4:4]\n");
+    fprintf(gnuplot,"set title 'Gráfica de la función'\n");
+    fprintf(gnuplot,"set xlabel 'x'\n");
+    fprintf(gnuplot,"set ylabel 'f(x)'\n");
+    fprintf(gnuplot,"set grid\n");
+    fprintf(gnuplot,"unset key\n");
+    //se grafica la función
+    fprintf(gnuplot,"f(x)=exp(-0.5*x**2)-0.5\n");
+    fprintf(gnuplot,"unset key\n");
+    fprintf(gnuplot,"plot f(x)\n");
+    fprintf(gnuplot, "set  output\n");
+    pclose(gnuplot);
+    //creamos un archivo de texto que almacene el punto estimado de la raíz
+    FILE *punto=fopen("punto.txt","w");
+    fprintf(punto,"%f %f",xp,0.0);
+    //se crea una nueva gráfica con acercamiento a la raíz estimada
+    FILE *gnuzoom = popen("gnuplot -persist","w");
+    fprintf(gnuzoom,"unset label\n");
+    fprintf(gnuzoom,"set terminal 'epslatex'\n");
+    fprintf(gnuzoom,"set output 'grafzoom.tex'\n");
+    fprintf(gnuzoom,"set xrange [1.1765:1.1775]\n");
+    fprintf(gnuzoom,"set yrange [-0.0005:0.0005]\n");
+    fprintf(gnuzoom,"set title 'Raíz'\n");
+    fprintf(gnuzoom,"set xlabel 'x'\n");
+    fprintf(gnuzoom,"set ylabel 'f(x)'\n");
+    fprintf(gnuzoom,"set grid\n");
+    fprintf(gnuzoom,"unset key\n");
+    fprintf(gnuzoom,"f(x)=exp(-0.5*x**2)-0.5\n");
+    fprintf(gnuzoom,"unset key\n");
+    fprintf(gnuzoom,"plot f(x), 'punto.txt' using 1:2\n");
+    fprintf(gnuzoom, "set  output\n");
+    fclose(punto);
+    pclose(gnuzoom);
     
 }
