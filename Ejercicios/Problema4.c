@@ -12,7 +12,7 @@ Salida: Varios resultados
 //Librerias
 #include <stdio.h>
 #include <math.h>
-//pasos del pseudocódigo
+//multiplicación de matrices
 void multC(float c,float a[3][3]){
     for (int i = 0; i < 3; i++)
     {
@@ -24,6 +24,7 @@ void multC(float c,float a[3][3]){
     }
     
 }
+//suma de matrices
 void suma(float a[3][3],float b[3][3]){
     for (int i = 0; i < 3; i++)
     {
@@ -34,6 +35,7 @@ void suma(float a[3][3],float b[3][3]){
         printf("\n");
     }
 }
+//resta de matrices
 void resta(float a[3][3], float b[3][3]){
     for (int i = 0; i < 3; i++)
     {
@@ -44,6 +46,7 @@ void resta(float a[3][3], float b[3][3]){
         printf("\n");
     }
 }
+//multiplicación de matrices
 void mult(float a[3][3], float b[3][3]){
     float c[3][3];
     for (int i = 0; i < 3; i++)
@@ -60,15 +63,9 @@ void mult(float a[3][3], float b[3][3]){
         printf("\n");
     }
 }
-float det(float a[3][3]){
-    float d;
-    d = a[0][0]*a[1][1]*a[2][2] + a[1][0]*a[2][1]*a[0][2] + a[2][0]*a[0][1]*a[1][2] - a[1][0]*a[0][1]*a[2][2] - a[0][0]*a[2][1]*a[1][2] - a[2][0]*a[1][1]*a[0][2];
-    return d;
-}
-
-void inv(float a[3][3]){
+//matriz inversa
+void inv(float a[3][3], float det){
     float c[3];
-    float d[8][3];
     float b[3][3];
     int m;
     for (int i = 0; i < 3; i++)
@@ -80,41 +77,30 @@ void inv(float a[3][3]){
             {
                 for (int l = 0; l < 3; l++)
                 {
-                    if ((k != i) && (l != j))
+                    if ((k != j) && (l != i))
                     {
                         c[m]=a[k][l];
-                        d[i+j][m]=a[k][l];
-                        printf("%f, ",d[i+j][m]);
                         m += 1;
                     }
                 }
             }
-            //adj[i][j]=(c[0]*c[3]-c[2]*c[1])*pow(-1,i+j);
-            //printf("\n %f, %d, %d \n",adj[0][0],i,j);
-            printf("\n %f, \n", pow(-1,i+j)*(d[i+j][0]*d[i+j][3]-d[i+j][2]*d[i+j][1]));
-            b[i][j]=pow(-1,i+j)*(d[i+j][0]*d[i+j][3]-d[i+j][2]*d[i+j][1]);
-            printf("\n %f \n", b[0][0]);
-        }
-    }
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            printf("%f, ",b[i][j]);
+            b[i][j]=pow(-1,i+j)*(c[0]*c[3]-c[2]*c[1])/det;
+            printf("%0.001f ",b[i][j]);
         }
         printf("\n");
     }
-    
+}
+float det(float a[3][3]){
+    float d;
+    d = a[0][0]*a[1][1]*a[2][2] + a[1][0]*a[2][1]*a[0][2] + a[2][0]*a[0][1]*a[1][2] - a[1][0]*a[0][1]*a[2][2] - a[0][0]*a[2][1]*a[1][2] - a[2][0]*a[1][1]*a[0][2];
+    return d;
 }
 
-
-
 void main(void){
-    float a[3][3]={{1,2,3},{4,5,6},{7,8,9}};
-    float b[3][3]={{1,0,0},{0,-1,0},{1,1,1}};
-    // mult(a,b);
+    float a[3][3]={{1,1,0},{1,0,0},{1,0,1}};
+    float b[3][3]={{0,1,0},{1,-1,0},{0,-1,1}};
+    mult(a,b);
+    //printf("\n");
     // printf("%f \n",det(a));
-    inv(a);
-    float v[3][3];
-    printf("\n %f", v[0][0]);
+    inv(a,det(a));
 }
