@@ -83,6 +83,4 @@ void main(void){
     } else{
         printf("valor inválido de n\n");
     }
-
-
 }
